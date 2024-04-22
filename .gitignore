@@ -16,3 +16,5 @@ smoothllm/plotting/
 smoothllm/smoothing_ASR.png
 
 DIR
+
+.DS_Store
