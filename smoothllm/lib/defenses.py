@@ -115,7 +115,6 @@ class SmoothLLM(Defense):
         ]
         return random.choice(majority_outputs)
 
-
 class ECDefense(Defense):
     '''
     Erase-and-Check defense implementations from Certified LLM Safety Paper
@@ -126,10 +125,12 @@ class ECDefense(Defense):
     def __init__(self,
         target_model,
         ec_type,
+        max_erase,
         # ec_params
     ):
         super(ECDefense, self).__init__(target_model)
         self.ec_type = ec_type
+        self.max_erase = max_erase
         # Using custom classifier for safety filter
         # Load model and tokenizer
         # self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
@@ -161,13 +162,13 @@ class ECDefense(Defense):
     # @torch.no_grad()
     def __call__ (self, prompt, batch_size=64, max_new_len=100):
         if self.ec_type == "smoothing":
-            is_harmful = ecdefenses.erase_and_check_smoothing(prompt.full_prompt, self.pipeline, self.tokenizer, max_erase=20)
+            is_harmful = ecdefenses.erase_and_check_smoothing(prompt.full_prompt, self.pipeline, self.tokenizer, max_erase=self.max_erase)
         # elif self.ec_type == "ecgrad":
         #     is_harmful, _ = ecgraddefense.grad_ec(prompt.full_prompt, self.model, self.tokenizer, self.model.distilbert.embeddings.word_embeddings)
         # elif self.ec_type == "greedy_ec":
         #     is_harmful = ecgreedydefense.greedy_ec(prompt.full_prompt, self.model, self.tokenizer)
         else:
-            is_harmful = ecdefenses.erase_and_check(prompt.full_prompt, self.pipeline, tokenizer=self.tokenizer, max_erase=20, randomized=False, prompt_sampling_ratio=0.1, mode=self.ec_type)
+            is_harmful = ecdefenses.erase_and_check(prompt.full_prompt, self.pipeline, tokenizer=self.tokenizer, max_erase=self.max_erase, randomized=False, prompt_sampling_ratio=0.1, mode=self.ec_type)
 
         if is_harmful:
             return self.DEFAULT_REFUSAL

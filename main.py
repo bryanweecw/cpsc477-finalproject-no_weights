@@ -115,6 +115,7 @@ def main(args):
         ec_def = defenses.ECDefense(
             target_model=target_model,
             ec_type = args.ec_type,
+            max_erase = args.max_erase
         )
 
         if args.attack == 'GCG':
@@ -135,18 +136,19 @@ def main(args):
             # Save results to a pandas DataFrame
             summary_df = pd.DataFrame.from_dict({
                 'EC Mode': [args.ec_type],
+                'Max Erase': [args.max_erase],
                 'JB percentage': [np.mean(jailbroken_results) * 100],
                 'Trial index': [args.trial]
             })
             summary_df.to_pickle(os.path.join(
-                args.results_dir, 'summary_ec_gcg.pd'
+                args.results_dir, f'summary_ec_gcg_{args.trial}.pd'
             ))
             print(summary_df)
 
         elif args.attack == 'PAIR':
             
             # Limit the maximum number of queries to the attacker model to 20.
-            max_num_queries = 5
+            max_num_queries = 20
 
             # args_pair = {
             #     'attack_model': 'llama-2',
@@ -173,7 +175,7 @@ def main(args):
             attack_prompts = zip(goals, targets)
 
             batchsize = max_num_queries
-            iterations = 5
+            iterations = 3
 
             jailbroken_results = []
 
@@ -212,6 +214,10 @@ def main(args):
                     # Print prompts, responses, and scores
                     for i, (prompt, improv, response, score) in enumerate(zip(adv_prompt_list, improv_list, target_response_list, judge_scores)):
                         print(f"{i+1}/{batchsize}\n\n[IMPROVEMENT]:\n{improv} \n\n[PROMPT]:\n{prompt} \n\n[RESPONSE]:\n{response}\n\n[SCORE]:\n{score}\n\n")
+                        if score == 10:
+                            # create a file to store the prompt, response, and score
+                            with open(f"summary_ec_pair_{args.trial}_{i}.txt", 'w') as f:
+                                f.write(f"{i+1}/{batchsize}\n\n[IMPROVEMENT]:\n{improv} \n\n[PROMPT]:\n{prompt} \n\n[RESPONSE]:\n{response}\n\n[SCORE]:\n{score}\n\n")
 
                     for i, conv in enumerate(convs_list):
                         conv.messages = conv.messages[-2*(args_pair.keep_last_n):]
@@ -224,12 +230,13 @@ def main(args):
 
             summary_df = pd.DataFrame.from_dict({
                 'EC Mode': [args.ec_type],
+                'Max Erase': [args.max_erase],
                 'JB percentage': [np.mean(jailbroken_results) * 100],
                 'Trial index': [args.trial]
             })
 
             summary_df.to_pickle(os.path.join(
-                args.results_dir, 'summary_ec_pair.pd'
+                args.results_dir, f'summary_ec_pair_{args.trial}.pd'
             ))
             print(summary_df)
 
@@ -250,7 +257,7 @@ def main(args):
                     output = target_model(
                         batch = prompt.full_prompt,
                         max_new_tokens = prompt.max_new_tokens
-                        )
+                    )
                     print(output)
                     jb = defense.is_jailbroken(output[0])
                     jailbroken_results.append(jb)
@@ -265,22 +272,33 @@ def main(args):
             # print(f'We made {num_errors} errors')
 
             # Save results to a pandas DataFrame
-            summary_df = pd.DataFrame.from_dict({
-                'Number of smoothing copies': [args.smoothllm_num_copies],
-                'Perturbation type': [args.smoothllm_pert_type],
-                'Perturbation percentage': [args.smoothllm_pert_pct],
-                'JB percentage': [np.mean(jailbroken_results) * 100],
-                'Trial index': [args.trial]
-            })
-            summary_df.to_pickle(os.path.join(
-                args.results_dir, 'summary_smoothllm_gcg.pd'
-            ))
-            print(summary_df)
+            if args.defense == "NONE":
+                summary_df = pd.DataFrame.from_dict({
+                    'JB percentage': [np.mean(jailbroken_results) * 100],
+                    'Trial index': [args.trial]
+                })
+                summary_df.to_pickle(os.path.join(
+                    args.results_dir, f'summary_smoothllm_NONE_{args.trial}.pd'
+                ))
+                print(summary_df)
+
+            else:
+                summary_df = pd.DataFrame.from_dict({
+                    'Number of smoothing copies': [args.smoothllm_num_copies],
+                    'Perturbation type': [args.smoothllm_pert_type],
+                    'Perturbation percentage': [args.smoothllm_pert_pct],
+                    'JB percentage': [np.mean(jailbroken_results) * 100],
+                    'Trial index': [args.trial]
+                })
+                summary_df.to_pickle(os.path.join(
+                    args.results_dir, f'summary_smoothllm_gcg_{args.trial}.pd'
+                ))
+                print(summary_df)
 
         elif args.attack == 'PAIR':
 
             # Limit the maximum number of queries to the attacker model to 20.
-            max_num_queries = 1
+            max_num_queries = 20
 
             # args_pair = {
             #     'attack_model': 'llama-2',
@@ -306,7 +324,7 @@ def main(args):
             attack_prompts = zip(goals, targets)
 
             batchsize = max_num_queries
-            iterations = 5
+            iterations = 3
 
             jailbroken_results = []
 
@@ -336,7 +354,16 @@ def main(args):
                     improv_list = [attack["improvement"] for attack in extracted_attack_list]
 
                     # Get target responses
-                    target_response_list = [defense(create_prompt(target_model, prompt)) for prompt in adv_prompt_list]
+
+                    if args.defense == "NONE":
+                        target_response_list = [target_model(
+                            batch = prompt.full_prompt,
+                            max_new_tokens = prompt.max_new_tokens
+                        ) for prompt in adv_prompt_list]
+
+                    else:
+                        target_response_list = [defense(create_prompt(target_model, prompt)) for prompt in adv_prompt_list]
+                    
                     print("Finished getting target responses.")
 
                     # Get judge scores
@@ -346,6 +373,10 @@ def main(args):
                     # Print prompts, responses, and scores
                     for i, (prompt, improv, response, score) in enumerate(zip(adv_prompt_list, improv_list, target_response_list, judge_scores)):
                         print(f"{i+1}/{batchsize}\n\n[IMPROVEMENT]:\n{improv} \n\n[PROMPT]:\n{prompt} \n\n[RESPONSE]:\n{response}\n\n[SCORE]:\n{score}\n\n")
+                        if score == 10:
+                            # create a file to store the prompt, response, and score
+                            with open(f"summary_{args.defense}_pair_{args.trial}_{i}.txt", 'w') as f:
+                                f.write(f"{i+1}/{batchsize}\n\n[IMPROVEMENT]:\n{improv} \n\n[PROMPT]:\n{prompt} \n\n[RESPONSE]:\n{response}\n\n[SCORE]:\n{score}\n\n")
 
                     for i, conv in enumerate(convs_list):
                         conv.messages = conv.messages[-2*(args_pair.keep_last_n):]
@@ -356,18 +387,29 @@ def main(args):
                         jailbroken_results.append(jb)
                         break
 
-            summary_df = pd.DataFrame.from_dict({
-                'Number of smoothing copies': [args.smoothllm_num_copies],
-                'Perturbation type': [args.smoothllm_pert_type],
-                'Perturbation percentage': [args.smoothllm_pert_pct],
-                'JB percentage': [np.mean(jailbroken_results) * 100],
-                'Trial index': [args.trial]
-            })
+            if args.defense == "NONE":
+                summary_df = pd.DataFrame.from_dict({
+                    'JB percentage': [np.mean(jailbroken_results) * 100],
+                    'Trial index': [args.trial]
+                })
+                summary_df.to_pickle(os.path.join(
+                    args.results_dir, f'summary_smoothllm_NONE_{args.trial}.pd'
+                ))
+                print(summary_df)
+            
+            else:
+                summary_df = pd.DataFrame.from_dict({
+                    'Number of smoothing copies': [args.smoothllm_num_copies],
+                    'Perturbation type': [args.smoothllm_pert_type],
+                    'Perturbation percentage': [args.smoothllm_pert_pct],
+                    'JB percentage': [np.mean(jailbroken_results) * 100],
+                    'Trial index': [args.trial]
+                })
 
-            summary_df.to_pickle(os.path.join(
-                args.results_dir, 'summary_smoothllm_pair.pd'
-            ))
-            print(summary_df)
+                summary_df.to_pickle(os.path.join(
+                    args.results_dir, f'summary_smoothllm_pair_{args.attack}_{args.trial}.pd'
+                ))
+                print(summary_df)
 
 
 if __name__ == '__main__':
@@ -448,7 +490,13 @@ if __name__ == '__main__':
 
     # EC Options
     # TODO: Add EC options
-    
 
+    parser.add_argument(
+        '--max_erase',
+        type=int,
+        default=20,
+        choices=[0, 2, 4, 6, 8, 10, 20, 30]
+    )
+    
     args = parser.parse_args()
     main(args)

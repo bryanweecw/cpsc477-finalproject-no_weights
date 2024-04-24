@@ -1,0 +1,135 @@
+python main.py --trial=0 --attack=GCG --smoothllm_num_copies=2 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=1 --attack=PAIR --smoothllm_num_copies=2 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=2 --attack=GCG --smoothllm_num_copies=2 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=3 --attack=PAIR --smoothllm_num_copies=2 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=4 --attack=GCG --smoothllm_num_copies=2 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=5 --attack=PAIR --smoothllm_num_copies=2 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=6 --attack=GCG --smoothllm_num_copies=2 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=7 --attack=PAIR --smoothllm_num_copies=2 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+
+python main.py --trial=8 --attack=GCG --smoothllm_num_copies=4 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=9 --attack=PAIR --smoothllm_num_copies=4 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=10 --attack=GCG --smoothllm_num_copies=4 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=11 --attack=PAIR --smoothllm_num_copies=4 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=12 --attack=GCG --smoothllm_num_copies=4 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=13 --attack=PAIR --smoothllm_num_copies=4 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=14 --attack=GCG --smoothllm_num_copies=4 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=15 --attack=PAIR --smoothllm_num_copies=4 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+
+python main.py --trial=16 --attack=GCG --smoothllm_num_copies=6 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=17 --attack=PAIR --smoothllm_num_copies=6 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=18 --attack=GCG --smoothllm_num_copies=6 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=19 --attack=PAIR --smoothllm_num_copies=6 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=20 --attack=GCG --smoothllm_num_copies=6 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=21 --attack=PAIR --smoothllm_num_copies=6 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=22 --attack=GCG --smoothllm_num_copies=6 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=23 --attack=PAIR --smoothllm_num_copies=6 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+
+python main.py --trial=24 --attack=GCG --smoothllm_num_copies=8 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=25 --attack=PAIR --smoothllm_num_copies=8 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=26 --attack=GCG --smoothllm_num_copies=8 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=27 --attack=PAIR --smoothllm_num_copies=8 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=28 --attack=GCG --smoothllm_num_copies=8 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=29 --attack=PAIR --smoothllm_num_copies=8 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=30 --attack=GCG --smoothllm_num_copies=8 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=31 --attack=PAIR --smoothllm_num_copies=8 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+
+python main.py --trial=32 --attack=GCG --smoothllm_num_copies=10 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=33 --attack=PAIR --smoothllm_num_copies=10 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=34 --attack=GCG --smoothllm_num_copies=10 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=35 --attack=PAIR --smoothllm_num_copies=10 --smoothllm_pert_pct=10 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=36 --attack=GCG --smoothllm_num_copies=10 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=37 --attack=PAIR --smoothllm_num_copies=10 --smoothllm_pert_pct=15 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=38 --attack=GCG --smoothllm_num_copies=10 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+python main.py --trial=39 --attack=PAIR --smoothllm_num_copies=10 --smoothllm_pert_pct=20 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
+
+python main.py --trial=0 --attack=GCG --defense=EC --ec_type=smoothing max_erase=0
+python main.py --trial=1 --attack=PAIR --defense=EC --ec_type=smoothing max_erase=0
+python main.py --trial=2 --attack=GCG --defense=EC --ec_type=insertion max_erase=0
+python main.py --trial=3 --attack=PAIR --defense=EC --ec_type=insertion max_erase=0
+python main.py --trial=4 --attack=GCG --defense=EC --ec_type=suffix max_erase=0
+python main.py --trial=5 --attack=PAIR --defense=EC --ec_type=suffix max_erase=0
+python main.py --trial=6 --attack=GCG --defense=EC --ec_type=infusion max_erase=0
+python main.py --trial=7 --attack=PAIR --defense=EC --ec_type=infusion max_erase=0
+
+python main.py --trial=8 --attack=GCG --defense=EC --ec_type=smoothing max_erase=2
+python main.py --trial=9 --attack=PAIR --defense=EC --ec_type=smoothing max_erase=2
+python main.py --trial=10 --attack=GCG --defense=EC --ec_type=insertion max_erase=2
+python main.py --trial=11 --attack=PAIR --defense=EC --ec_type=insertion max_erase=2
+python main.py --trial=12 --attack=GCG --defense=EC --ec_type=suffix max_erase=2
+python main.py --trial=13 --attack=PAIR --defense=EC --ec_type=suffix max_erase=2
+python main.py --trial=14 --attack=GCG --defense=EC --ec_type=infusion max_erase=2
+python main.py --trial=15 --attack=PAIR --defense=EC --ec_type=infusion max_erase=2
+
+python main.py --trial=16 --attack=GCG --defense=EC --ec_type=smoothing max_erase=4
+python main.py --trial=17 --attack=PAIR --defense=EC --ec_type=smoothing max_erase=4
+python main.py --trial=18 --attack=GCG --defense=EC --ec_type=insertion max_erase=4
+python main.py --trial=19 --attack=PAIR --defense=EC --ec_type=insertion max_erase=4
+python main.py --trial=20 --attack=GCG --defense=EC --ec_type=suffix max_erase=4
+python main.py --trial=21 --attack=PAIR --defense=EC --ec_type=suffix max_erase=4
+python main.py --trial=22 --attack=GCG --defense=EC --ec_type=infusion max_erase=4
+python main.py --trial=23 --attack=PAIR --defense=EC --ec_type=infusion max_erase=4
+
+python main.py --trial=24 --attack=GCG --defense=EC --ec_type=smoothing max_erase=6
+python main.py --trial=25 --attack=PAIR --defense=EC --ec_type=smoothing max_erase=6
+python main.py --trial=26 --attack=GCG --defense=EC --ec_type=insertion max_erase=6
+python main.py --trial=27 --attack=PAIR --defense=EC --ec_type=insertion max_erase=6
+python main.py --trial=28 --attack=GCG --defense=EC --ec_type=suffix max_erase=6
+python main.py --trial=29 --attack=PAIR --defense=EC --ec_type=suffix max_erase=6
+python main.py --trial=30 --attack=GCG --defense=EC --ec_type=infusion max_erase=6
+python main.py --trial=31 --attack=PAIR --defense=EC --ec_type=infusion max_erase=6
+
+python main.py --trial=32 --attack=GCG --defense=EC --ec_type=smoothing max_erase=8
+python main.py --trial=33 --attack=PAIR --defense=EC --ec_type=smoothing max_erase=8
+python main.py --trial=34 --attack=GCG --defense=EC --ec_type=insertion max_erase=8
+python main.py --trial=35 --attack=PAIR --defense=EC --ec_type=insertion max_erase=8
+python main.py --trial=36 --attack=GCG --defense=EC --ec_type=suffix max_erase=8
+python main.py --trial=37 --attack=PAIR --defense=EC --ec_type=suffix max_erase=8
+python main.py --trial=38 --attack=GCG --defense=EC --ec_type=infusion max_erase=8
+python main.py --trial=39 --attack=PAIR --defense=EC --ec_type=infusion max_erase=8
+
+python main.py --trial=40 --attack=GCG --defense=EC --ec_type=smoothing --max_erase=10
+python main.py --trial=41 --attack=PAIR --defense=EC --ec_type=smoothing --max_erase=10
+python main.py --trial=42 --attack=GCG --defense=EC --ec_type=insertion --max_erase=10
+python main.py --trial=43 --attack=PAIR --defense=EC --ec_type=insertion --max_erase=10
+python main.py --trial=44 --attack=GCG --defense=EC --ec_type=suffix --max_erase=10
+python main.py --trial=45 --attack=PAIR --defense=EC --ec_type=suffix --max_erase=10
+python main.py --trial=46 --attack=GCG --defense=EC --ec_type=infusion --max_erase=10
+python main.py --trial=47 --attack=PAIR --defense=EC --ec_type=infusion --max_erase=10
+
+python main.py --trial=48 --attack=GCG --defense=EC --ec_type=smoothing --max_erase=20
+python main.py --trial=49 --attack=PAIR --defense=EC --ec_type=smoothing --max_erase=20
+python main.py --trial=50 --attack=GCG --defense=EC --ec_type=insertion --max_erase=20
+python main.py --trial=51 --attack=PAIR --defense=EC --ec_type=insertion --max_erase=20
+python main.py --trial=52 --attack=GCG --defense=EC --ec_type=suffix --max_erase=20
+python main.py --trial=53 --attack=PAIR --defense=EC --ec_type=suffix --max_erase=20
+python main.py --trial=54 --attack=GCG --defense=EC --ec_type=infusion --max_erase=20
+python main.py --trial=55 --attack=PAIR --defense=EC --ec_type=infusion --max_erase=20
+
+python main.py --trial=56 --attack=GCG --defense=EC --ec_type=smoothing --max_erase=30
+python main.py --trial=57 --attack=PAIR --defense=EC --ec_type=smoothing --max_erase=30
+python main.py --trial=58 --attack=GCG --defense=EC --ec_type=insertion --max_erase=30
+python main.py --trial=59 --attack=PAIR --defense=EC --ec_type=insertion --max_erase=30
+python main.py --trial=60 --attack=GCG --defense=EC --ec_type=suffix --max_erase=30
+python main.py --trial=61 --attack=PAIR --defense=EC --ec_type=suffix --max_erase=30
+python main.py --trial=62 --attack=GCG --defense=EC --ec_type=infusion --max_erase=30
+python main.py --trial=63 --attack=PAIR --defense=EC --ec_type=infusion --max_erase=30
+
+python main.py --trial=0 --attack=GCG --defense=NONE
+python main.py --trial=1 --attack=PAIR --defense=NONE
+
+
+
+
+python main.py \
+    --results_dir <directory path> \
+    --trial=<trial=number> \
+    --target_model <vicuna | llama2> \
+    --defense <SmoothLLM | EC | NONE> \
+    --ec_type <smoothing | greedy_ec | grad_ec | insertion | suffix | infusion> \
+    --max_erase <0 | 2 | 4 | 6 | 8 | 10 | 20 | 30>
+
+
+
+    --ec_type <smoothing | greedy_ec | grad_ec | insertion | suffix | infusion> \
+    --max_erase <0 | 2 | 4 | 6 | 8 | 10 | 20 | 30>
