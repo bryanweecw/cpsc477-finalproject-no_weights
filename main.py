@@ -594,7 +594,6 @@ if __name__ == '__main__':
         '--attack_logfile',
         type=str,
         default='smoothllm/data/GCG/llama2_behaviors.json'
-        # /Users/bryanwee/cpsc477-finalproject/smoothllm/data/GCG/llama2_behaviors.json
     )
 
     parser.add_argument(

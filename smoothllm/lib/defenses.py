@@ -37,8 +37,6 @@ class Defense:
 
     DEFAULT_REFUSAL = "I'm sorry, I cannot assist with that request."
 
-    model_wt_path = '/home/bryan.wee/cpsc477-finalproject/models/distilbert_infusion.pt'
-
     def __init__(self, target_model):
         self.target_model = target_model
 
@@ -132,19 +130,7 @@ class ECDefense(Defense):
         super(ECDefense, self).__init__(target_model)
         self.ec_type = ec_type
         self.max_erase = max_erase
-        # Using custom classifier for safety filter
-        # Load model and tokenizer
-        # self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-        # self.model = DistilBertForSequenceClassification.from_pretrained('distilbert-base-uncased')
-
-        # Load model weights
-        # path = 'models/distillbert_saved_weights.pt'
-        # self.model.load_state_dict(torch.load(self.model_wt_path))
-        # self.model.eval()
-
-        # Create a text classification pipeline
-        # self.pipeline = transformers.pipeline('text-classification', model=self.model, tokenizer=self.tokenizer, device=0)
-
+        
         self.model = target_model.model
         tokenizer_path = 'DIR/llama-2/llama/llama-2-7b-chat-hf'
 

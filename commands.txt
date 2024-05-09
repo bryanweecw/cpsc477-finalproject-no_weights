@@ -119,8 +119,11 @@ python main.py --trial=63 --attack=PAIR --defense=EC --ec_type=infusion --max_er
 python main.py --trial=0 --attack=GCG --defense=NONE
 python main.py --trial=1 --attack=PAIR --defense=NONE
 
+python main.py --trial=64 --attack=SAFE --defense=NONE
+python main.py --trial=65 --attack=SAFE --defense=NONE
 
-
+python main.py --trial=66 --attack=SAFE --defense=EC --ec_type=smoothing --max_erase=20
+python main.py --trial=65 --attack=SAFE --smoothllm_num_copies=2 --smoothllm_pert_pct=5 --smoothllm_pert_type=RandomSwapPerturbation --defense=SmoothLLM 
 
 python main.py \
     --results_dir <directory path> \
