@@ -8,11 +8,11 @@ The project also tests the effectiveness of the attacks themselves.
 ## Structure
 The project is structured as follows:
 
-- `certifiedllmsafety/` is based on the repository from Kumar et al. (2024) which contains the code for the SmoothLLM and Erase-and-Check defenses.
-- `JailbreakingLLMs/` is based on the repository from Chao et al. (2024) which contains the code for PAIR attacks.
-- `llm-attacks/` is based on the repository from Zou et al. (2023) which contains the code for the GCG attacks.
+- `certifiedllmsafety/` is based on the repository from Kumar et al. (2024) which contains the code for the SmoothLLM and Erase-and-Check defenses.[https://github.com/aounon/certified-llm-safety]
+- `JailbreakingLLMs/` is based on the repository from Chao et al. (2024) which contains the code for PAIR attacks. [https://github.com/patrickrchao/JailbreakingLLMs]
+- `llm-attacks/` is based on the repository from Zou et al. (2023) which contains the code for the GCG attacks. [https://github.com/llm-attacks/llm-attacks]
 - `results/` is the output folder for the experiment results.
-- `smoothllm/` is based on the repository from Robey et al. (2023) which contains the code for the SmoothLLM defense.
+- `smoothllm/` is based on the repository from Robey et al. (2023) which contains the code for the SmoothLLM defense. [https://github.com/arobey1/smooth-llm]
 
 ## Set up and running
 
@@ -23,6 +23,8 @@ Be sure to install the required packages by running `pip install -r requirements
 To run the project and various experiments as described in our final report, run the following commands:
 
 ```
+export OPENAIAPIKEY=<YOUR KEY GOES HERE>
+
 python main.py --trial=0 --attack=GCG --defense=NONE
 python main.py --trial=1 --attack=PAIR --defense=NONE
 
