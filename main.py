@@ -107,17 +107,17 @@ def main(args):
         device='cuda:0'
     )
 
-    print("building defense instance")
+    # print("building defense instance")
 
-    # Create SmoothLLM instance
-    defense = defenses.SmoothLLM(
-        target_model=target_model,
-        pert_type=args.smoothllm_pert_type,
-        pert_pct=args.smoothllm_pert_pct,
-        num_copies=args.smoothllm_num_copies
-    )
+    # # Create SmoothLLM instance
+    # defense = defenses.SmoothLLM(
+    #     target_model=target_model,
+    #     pert_type=args.smoothllm_pert_type,
+    #     pert_pct=args.smoothllm_pert_pct,
+    #     num_copies=args.smoothllm_num_copies
+    # )
 
-    print("starting work")
+    # print("starting work")
 
     if args.defense == 'EC':
         ec_def = defenses.ECDefense(
@@ -125,6 +125,11 @@ def main(args):
             ec_type = args.ec_type,
             max_erase = args.max_erase
         )
+
+        # test_command
+        # print("testing")
+        # tester = ec_def(create_prompt(target_model, "Test!"))
+        # print(tester)
 
         if args.attack == 'GCG':
             # Create attack instance, used to create prompts
@@ -135,8 +140,14 @@ def main(args):
 
             jailbroken_results = []
             for i, prompt in tqdm(enumerate(attack.prompts)):
+                print(prompt.full_prompt)
                 output = ec_def(prompt)
                 jb = ec_def.is_jailbroken(output)
+                print(output)
+                if jb:
+                    print("jailbroken")
+                else:
+                    print("not jailbroken")
                 jailbroken_results.append(jb)
 
             # print(f'We made {num_errors} errors')
@@ -251,7 +262,49 @@ def main(args):
             ))
             print(summary_df)
 
+        elif args.attack == "SAFE":
+
+            safe_prompts = []
+            jailbroken_results = []
+
+            with open(args.safe_logfile, 'r') as f:
+                # Iterate through each line in the file
+                for line in f:
+                    # Strip the newline character from the end of the line
+                    safe_prompt = line.strip()
+                    # Append the cleaned line to the list
+                    safe_prompts.append(safe_prompt)
+
+            for i, safe_prompt in tqdm(enumerate(safe_prompts)):
+                output = ec_def(create_prompt(target_model, safe_prompt))
+                print(output)
+                jb = ec_def.is_jailbroken(output)
+                jailbroken_results.append(jb)
+
+            summary_df = pd.DataFrame.from_dict({
+                'EC Mode': [args.ec_type],
+                'Max Erase': [args.max_erase],
+                'JB percentage': [np.mean(jailbroken_results) * 100],
+                'Trial index': [args.trial]
+            })
+            summary_df.to_pickle(os.path.join(
+                args.results_dir, f'summary_ec_safe_{args.trial}.pd'
+            ))
+            print(summary_df)
+
     else:
+        print("building defense instance")
+
+        # Create SmoothLLM instance
+        defense = defenses.SmoothLLM(
+            target_model=target_model,
+            pert_type=args.smoothllm_pert_type,
+            pert_pct=args.smoothllm_pert_pct,
+            num_copies=args.smoothllm_num_copies
+        )
+
+        print("starting work")
+
         # If attack type is GCG
         if args.attack == 'GCG':
             # Create attack instance, used to create prompts
@@ -435,6 +488,77 @@ def main(args):
                 ))
                 print(summary_df)
 
+        elif args.attack == "SAFE":
+
+            safe_prompts = []
+            jailbroken_results = []
+
+            with open(args.safe_logfile, 'r') as f:
+                # Iterate through each line in the file
+                for line in f:
+                    # Strip the newline character from the end of the line
+                    safe_prompt = line.strip()
+                    # Append the cleaned line to the list
+                    safe_prompts.append(safe_prompt)
+
+            if args.defense == "NONE":
+                for i, safe_prompt in tqdm(enumerate(safe_prompts)):
+                    output = target_model(
+                        batch = safe_prompt,
+                        max_new_tokens = 100
+                        )
+                    print(output)
+                    jb = defense.is_jailbroken(output[0])
+                    jailbroken_results.append(jb)
+
+            else: 
+                for i, safe_prompt in tqdm(enumerate(safe_prompts)):
+                    attempt = 0
+                    success = False
+                    while attempt < 3 and not success:
+                        try:
+                            # Try to create and process the prompt
+                            output = defense(create_prompt(target_model, safe_prompt))
+                            print(output)
+                            # Check if the output indicates a jailbroken state
+                            jb = defense.is_jailbroken(output)
+                            jailbroken_results.append(jb)
+                            success = True  # If success, mark as successful
+                        except Exception as e:
+                            # If there's an error, increment the attempt counter
+                            print(f"Error on attempt {attempt + 1}: {e}")
+                            attempt += 1
+
+                    # If after 3 attempts it fails, append an empty string as a placeholder
+                    if not success:
+                        output = ""
+                        jb = defense.is_jailbroken(output)
+                        jailbroken_results.append(jb)
+
+            # Save results to a pandas DataFrame
+            if args.defense == "NONE":
+                summary_df = pd.DataFrame.from_dict({
+                    'JB percentage': [np.mean(jailbroken_results) * 100],
+                    'Trial index': [args.trial]
+                })
+                summary_df.to_pickle(os.path.join(
+                    args.results_dir, f'summary_SAFE_NONE_{args.trial}.pd'
+                ))
+                print(summary_df)
+
+            else:
+                summary_df = pd.DataFrame.from_dict({
+                    'Number of smoothing copies': [args.smoothllm_num_copies],
+                    'Perturbation type': [args.smoothllm_pert_type],
+                    'Perturbation percentage': [args.smoothllm_pert_pct],
+                    'JB percentage': [np.mean(jailbroken_results) * 100],
+                    'Trial index': [args.trial]
+                })
+                summary_df.to_pickle(os.path.join(
+                    args.results_dir, f'summary_smoothllm_SAFE_{args.trial}.pd'
+                ))
+                print(summary_df)
+
 
 if __name__ == '__main__':
     torch.cuda.empty_cache()
@@ -464,13 +588,19 @@ if __name__ == '__main__':
         '--attack',
         type=str,
         default='GCG',
-        choices=['GCG', 'PAIR']
+        choices=['GCG', 'PAIR', 'SAFE']
     )
     parser.add_argument(
         '--attack_logfile',
         type=str,
         default='smoothllm/data/GCG/llama2_behaviors.json'
         # /Users/bryanwee/cpsc477-finalproject/smoothllm/data/GCG/llama2_behaviors.json
+    )
+
+    parser.add_argument(
+        '--safe_logfile',
+        type=str,
+        default='certifiedllmsafety/data/safe_prompts_50.txt'
     )
 
     # SmoothLLM

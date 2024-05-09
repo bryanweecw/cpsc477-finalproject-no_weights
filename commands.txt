@@ -85,6 +85,7 @@ python main.py --trial=34 --attack=GCG --defense=EC --ec_type=insertion max_eras
 python main.py --trial=35 --attack=PAIR --defense=EC --ec_type=insertion max_erase=8
 python main.py --trial=36 --attack=GCG --defense=EC --ec_type=suffix max_erase=8
 python main.py --trial=37 --attack=PAIR --defense=EC --ec_type=suffix max_erase=8
+
 python main.py --trial=38 --attack=GCG --defense=EC --ec_type=infusion max_erase=8
 python main.py --trial=39 --attack=PAIR --defense=EC --ec_type=infusion max_erase=8
 

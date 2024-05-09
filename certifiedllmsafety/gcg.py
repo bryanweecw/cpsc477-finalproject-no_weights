@@ -22,7 +22,8 @@ def gcg_suffix(input, model, tokenizer, word_embeddings, embedding_matrix,
         adv_prompt: Input prompt with adversarial suffix
     """
     # Set device
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:0')
+    #  if torch.cuda.is_available() else 'cpu')
 
     if num_adv == 0:
         return tokenizer.decode(tokenizer.encode(input, add_special_tokens=False))

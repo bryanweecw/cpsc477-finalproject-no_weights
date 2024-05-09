@@ -1,12 +1,13 @@
 import os
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 from scriptify import scriptify
 import numpy as np
 import json
 from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
 import time
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 
@@ -19,12 +20,12 @@ class NpEncoder(json.JSONEncoder):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
-    
+
 class OpenaiModel():
     def __init__(self, model_name="gpt-3.5-turbo", add_system_prompt=True) -> None:
         self.model_name = model_name
         self.add_system_prompt = add_system_prompt
-    
+
     def fit_message(self, msg):
         if self.add_system_prompt:
             conversation = [
@@ -41,16 +42,15 @@ class OpenaiModel():
     def __call__(self, msg, **kwargs):
         while True:
             try:
-                raw_response = openai.ChatCompletion.create(
-                            model=self.model_name,
-                            messages=self.fit_message(msg),
-                            **kwargs)
+                raw_response = client.chat.completions.create(model=self.model_name,
+                messages=self.fit_message(msg),
+                **kwargs)
                 self.raw_response = raw_response
 
-                return [str(m.message.content) for m in raw_response['choices']]
+                return [str(m.message.content) for m in raw_response.choices]
             except:
                 pass 
-        
+
             time.sleep(10)
 
 class AnthropicModel():
@@ -73,7 +73,7 @@ class AnthropicModel():
 
             except:
                 pass 
-        
+
             time.sleep(10)
 
 def load_prompts(instruction, instructions_path):
@@ -84,7 +84,7 @@ def load_prompts(instruction, instructions_path):
         with open(instructions_path, 'r') as f:
             instructions = f.readlines()
             f.close()
-    
+
     return instructions
 
 
@@ -173,16 +173,16 @@ def make_checking_fn(method='key_words', **kwargs):
                                     "self-care"))
         else:
             key_words = kwargs['key_words']
-        
+
         def check(texts):
             return [np.mean([x not in text for x in key_words]) == 1 for text in texts]
-    
+
     elif method == 'moderation':
         raise NotImplementedError
 
     else:
         raise NotImplementedError
-    
+
     return check
 
 
@@ -200,17 +200,17 @@ def main(instruction=None,
          verbose=False,
          output_file='api_models_log.json',
          add_system_prompt=False):
-    
+
     input_args = locals()
 
     print(input_args)
-    
+
     if instruction is None and instructions_path is None:
         raise ValueError(f"question and questions_path can not be None at same time.")
 
     if adv_prompt is None and adv_prompts_path is None:
         raise ValueError(f"adv_prompt and adv_prompts_path can not be None at same time.")
-    
+
     if isinstance(n_instructions, int):
         instructions = load_prompts(instruction, instructions_path)[:n_instructions]
     elif  isinstance(n_instructions, str):
@@ -223,7 +223,7 @@ def main(instruction=None,
         raise ValueError("Found 0 instruction.")
     else:
         print(f"Find {len(instructions)} instructions. ")
-    
+
     adv_prompts = load_prompts(adv_prompt, adv_prompts_path)
     if len(adv_prompts) < 1:
         raise ValueError("Found 0 adversarial prompt.")
@@ -243,7 +243,7 @@ def main(instruction=None,
             configs[key] = value
         else:
             configs[key] = int(value)
-    
+
     chatbot, configs = load_chatbot(model_name=model, 
                                     configs=configs, 
                                     add_system_prompt=add_system_prompt)
@@ -281,8 +281,8 @@ def main(instruction=None,
             passing_prob = np.mean(passing_probs)
 
             records[adv_prompts[i]][instructions[j]] = responses
-            
-        
+
+
         pass_rates.append(n_passed/len(instructions))
         pass_probs.append(passing_prob)
 
@@ -292,10 +292,10 @@ def main(instruction=None,
         json.dump(records, f, indent=4, cls=NpEncoder)
 
         f.close()
-    
+
     print("All records are saved to ", output_file)
 
-        
 
 
-    
+
+

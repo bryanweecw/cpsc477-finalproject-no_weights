@@ -115,6 +115,7 @@ class SmoothLLM(Defense):
         ]
         return random.choice(majority_outputs)
 
+
 class ECDefense(Defense):
     '''
     Erase-and-Check defense implementations from Certified LLM Safety Paper
@@ -150,6 +151,7 @@ class ECDefense(Defense):
         self.tokenizer = AutoTokenizer.from_pretrained(
             tokenizer_path,
         )
+        # self.tokenizer = target_model.tokenizer
 
         self.pipeline = transformers.pipeline(
             "text-generation",
@@ -159,7 +161,7 @@ class ECDefense(Defense):
             tokenizer=self.tokenizer
         )
 
-    # @torch.no_grad()
+    @torch.no_grad()
     def __call__ (self, prompt, batch_size=64, max_new_len=100):
         if self.ec_type == "smoothing":
             is_harmful = ecdefenses.erase_and_check_smoothing(prompt.full_prompt, self.pipeline, self.tokenizer, max_erase=self.max_erase)
@@ -174,5 +176,3 @@ class ECDefense(Defense):
             return self.DEFAULT_REFUSAL
         else:
             return self.target_model(prompt.full_prompt, max_new_tokens=prompt.max_new_tokens)
-        
-

@@ -1,4 +1,6 @@
 import openai
+from openai import OpenAI
+
 import anthropic
 import os
 import time
@@ -7,17 +9,18 @@ import gc
 from typing import Dict, List
 import google.generativeai as palm
 
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class LanguageModel():
     def __init__(self, model_name):
         self.model_name = model_name
-    
+
     def batched_generate(self, prompts_list: List, max_n_tokens: int, temperature: float):
         """
         Generates responses for a batch of prompts using a language model.
         """
         raise NotImplementedError
-        
+
 class HuggingFace(LanguageModel):
     def __init__(self,model_name, model, tokenizer):
         self.model_name = model_name
@@ -32,7 +35,7 @@ class HuggingFace(LanguageModel):
                         top_p: float = 1.0,):
         inputs = self.tokenizer(full_prompts_list, return_tensors='pt', padding=True)
         inputs = {k: v.to(self.model.device.index) for k, v in inputs.items()}
-    
+
         # Batch generation
         if temperature > 0:
             output_ids = self.model.generate(
@@ -52,7 +55,7 @@ class HuggingFace(LanguageModel):
                 top_p=1,
                 temperature=1, # To prevent warning messages
             )
-            
+
         # If the model is not an encoder-decoder type, slice off the input tokens
         if not self.model.config.is_encoder_decoder:
             output_ids = output_ids[:, inputs["input_ids"].shape[1]:]
@@ -83,7 +86,6 @@ class GPT(LanguageModel):
     API_QUERY_SLEEP = 0.5
     API_MAX_RETRY = 5
     API_TIMEOUT = 20
-    openai.api_key = os.getenv("OPENAI_API_KEY")
 
     def generate(self, conv: List[Dict], 
                 max_n_tokens: int, 
@@ -101,23 +103,22 @@ class GPT(LanguageModel):
         output = self.API_ERROR_OUTPUT
         for _ in range(self.API_MAX_RETRY):
             try:
-                response = openai.ChatCompletion.create(
-                            model = self.model_name,
-                            messages = conv,
-                            max_tokens = max_n_tokens,
-                            temperature = temperature,
-                            top_p = top_p,
-                            request_timeout = self.API_TIMEOUT,
-                            )
-                output = response["choices"][0]["message"]["content"]
+                response = client.chat.completions.create(model = self.model_name,
+                messages = conv,
+                max_tokens = max_n_tokens,
+                temperature = temperature,
+                top_p = top_p,
+                # request_timeout = self.API_TIMEOUT
+                )
+                output = response.choices[0].message.content
                 break
-            except openai.error.OpenAIError as e:
+            except openai.OpenAIError as e:
                 print(type(e), e)
                 time.sleep(self.API_RETRY_SLEEP)
-        
+
             time.sleep(self.API_QUERY_SLEEP)
         return output 
-    
+
     def batched_generate(self, 
                         convs_list: List[List[Dict]],
                         max_n_tokens: int, 
@@ -132,7 +133,7 @@ class Claude():
     API_MAX_RETRY = 5
     API_TIMEOUT = 20
     API_KEY = os.getenv("ANTHROPIC_API_KEY")
-   
+
     def __init__(self, model_name) -> None:
         self.model_name = model_name
         self.model= anthropic.Anthropic(
@@ -167,17 +168,17 @@ class Claude():
             except anthropic.APIError as e:
                 print(type(e), e)
                 time.sleep(self.API_RETRY_SLEEP)
-        
+
             time.sleep(self.API_QUERY_SLEEP)
         return output
-    
+
     def batched_generate(self, 
                         convs_list: List[List[Dict]],
                         max_n_tokens: int, 
                         temperature: float,
                         top_p: float = 1.0,):
         return [self.generate(conv, max_n_tokens, temperature, top_p) for conv in convs_list]
-        
+
 class PaLM():
     API_RETRY_SLEEP = 10
     API_ERROR_OUTPUT = "$ERROR$"
@@ -213,7 +214,7 @@ class PaLM():
                     top_p=top_p
                 )
                 output = completion.last
-                
+
                 if output is None:
                     # If PaLM refuses to output and returns None, we replace it with a default output
                     output = self.default_output
@@ -225,10 +226,10 @@ class PaLM():
             except Exception as e:
                 print(type(e), e)
                 time.sleep(self.API_RETRY_SLEEP)
-        
+
             time.sleep(1)
         return output
-    
+
     def batched_generate(self, 
                         convs_list: List[List[Dict]],
                         max_n_tokens: int, 
